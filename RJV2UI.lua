@@ -1,8 +1,8 @@
 repeat task.wait() until game:IsLoaded()
-local library = {}
+local RJlib = {}
 local ToggleUI = false
-library.currentTab = nil
-library.flags = {}
+RJlib.currentTab = nil
+RJlib.flags = {}
 
 local services = setmetatable({}, {
   __index = function(t, k)
@@ -47,10 +47,10 @@ local toggled = false
 local switchingTabs = false
 function switchTab(new)
   if switchingTabs then return end
-  local old = library.currentTab
+  local old = RJlib.currentTab
   if old == nil then
     new[2].Visible = true
-    library.currentTab = new
+    RJlib.currentTab = new
     services.TweenService:Create(new[1], TweenInfo.new(0.1), {ImageTransparency = 0}):Play()
     services.TweenService:Create(new[1].TabText, TweenInfo.new(0.1), {TextTransparency = 0}):Play()
     return
@@ -58,7 +58,7 @@ function switchTab(new)
   
   if old[1] == new[1] then return end
   switchingTabs = true
-  library.currentTab = new
+  RJlib.currentTab = new
 
   services.TweenService:Create(old[1], TweenInfo.new(0.1), {ImageTransparency = 0.2}):Play()
   services.TweenService:Create(new[1], TweenInfo.new(0.1), {ImageTransparency = 0}):Play()
@@ -115,7 +115,7 @@ function drag(frame, hold)
 	end)
 end
 
-function library.new(library, name,theme)
+function RJlib.new(RJlib, name,theme)
     for _, v in next, services.CoreGui:GetChildren() do
         if v.Name == "frosty" then
           v:Destroy()
@@ -411,7 +411,7 @@ end
       Open.Position = UDim2.new(0.00829315186, 0, 0.31107837, 0)
       Open.Size = UDim2.new(0, 61, 0, 32)
       Open.Font = Enum.Font.SourceSans
-      Open.Text = "隐藏/打开"
+      Open.Text = "打开"
       Open.TextColor3 = Color3.fromRGB(255, 255, 255)
       Open.TextSize = 14.000
       Open.Active = true
@@ -482,7 +482,7 @@ end
           switchTab({TabIco, Tab})
         end)
     
-        if library.currentTab == nil then switchTab({TabIco, Tab}) end
+        if RJlib.currentTab == nil then switchTab({TabIco, Tab}) end
     
         TabL:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
           Tab.CanvasSize = UDim2.new(0, 0, 0, TabL.AbsoluteContentSize.Y + 8)
@@ -650,7 +650,7 @@ end
             assert(text, "No text provided")
             assert(flag, "No flag provided")
     
-            library.flags[flag] = enabled
+            RJlib.flags[flag] = enabled
     
             local ToggleModule = Instance.new("Frame")
             local ToggleBtn = Instance.new("TextButton")
@@ -706,10 +706,10 @@ end
     
             local funcs = {
               SetState = function(self, state)
-                if state == nil then state = not library.flags[flag] end
-                if library.flags[flag] == state then return end
+                if state == nil then state = not RJlib.flags[flag] end
+                if RJlib.flags[flag] == state then return end
                 services.TweenService:Create(ToggleSwitch, TweenInfo.new(0.2), {Position = UDim2.new(0, (state and ToggleSwitch.Size.X.Offset / 2 or 0), 0, 0), BackgroundColor3 = (state and Color3.fromRGB(255, 255, 255) or beijingColor)}):Play()
-                library.flags[flag] = state
+                RJlib.flags[flag] = state
                 callback(state)
               end,
               Module = ToggleModule
@@ -852,7 +852,7 @@ end
             assert(flag, "No flag provided")
             assert(default, "No default text provided")
     
-            library.flags[flag] = default
+            RJlib.flags[flag] = default
     
             local TextboxModule = Instance.new("Frame")
             local TextboxBack = Instance.new("TextButton")
@@ -927,7 +927,7 @@ end
               if TextBox.Text == "" then
                 TextBox.Text = default
               end
-              library.flags[flag] = TextBox.Text
+              RJlib.flags[flag] = TextBox.Text
               callback(TextBox.Text)
             end)
     
@@ -944,7 +944,7 @@ end
             local default = default or min
             local precise = precise or false
     
-            library.flags[flag] = default
+            RJlib.flags[flag] = default
     
             assert(text, "No text provided")
             assert(flag, "No flag provided")
@@ -1075,7 +1075,7 @@ end
                 else
                   value = value or math.floor(min + (max - min) * percent)
                 end
-                library.flags[flag] = tonumber(value)
+                RJlib.flags[flag] = tonumber(value)
                 SliderValue.Text = tostring(value)
                 SliderPart.Size = UDim2.new(percent, 0, 1, 0)
                 callback(tonumber(value))
@@ -1083,13 +1083,13 @@ end
             }
     
             MinSlider.MouseButton1Click:Connect(function()
-              local currentValue = library.flags[flag]
+              local currentValue = RJlib.flags[flag]
               currentValue = math.clamp(currentValue - 1, min, max)
               funcs:SetValue(currentValue)
             end)
     
             AddSlider.MouseButton1Click:Connect(function()
-              local currentValue = library.flags[flag]
+              local currentValue = RJlib.flags[flag]
               currentValue = math.clamp(currentValue + 1, min, max)
               funcs:SetValue(currentValue)
             end)
@@ -1175,7 +1175,7 @@ end
             assert(text, "No text provided")
             assert(flag, "No flag provided")
     
-            library.flags[flag] = nil
+            RJlib.flags[flag] = nil
             
             local DropdownModule = Instance.new("Frame")
             local DropdownTop = Instance.new("TextButton")
@@ -1322,7 +1322,7 @@ end
                 ToggleDropVis()
                 callback(Option.Text)
                 DropdownText.Text = Option.Text
-                library.flags[flag] = Option.Text
+                RJlib.flags[flag] = Option.Text
               end)
             end
     
@@ -1352,4 +1352,4 @@ end
       end
       return window
     end
-return library
+return RJlib
